@@ -15,11 +15,12 @@ import {
 import { useMsal, useIsAuthenticated } from '@azure/msal-react';
 import { loginRequest } from '../auth/auth-config';
 import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useEffect } from 'react';
 
 export function NavUserLogin() {
   const { isMobile } = useSidebar();
   const isAuthenticated = useIsAuthenticated();
-  const { instance } = useMsal();
+  const { instance, accounts } = useMsal();
   const user = useCurrentUser();
 
   const handleLoginRedirect = () => {
@@ -29,6 +30,13 @@ export function NavUserLogin() {
   const handleLogoutRedirect = () => {
     void instance.logoutRedirect();
   };
+
+  useEffect(() => {
+    console.log('Authentication status changed:', isAuthenticated);
+    console.log('Current user data:', user);
+    console.log('Current instance:', instance);
+    console.log('Current accounts:', accounts);
+  }, [isAuthenticated, user, instance, accounts]);
 
   if (!isAuthenticated || !user) {
     return (
