@@ -5,8 +5,10 @@
  * AMS API documentation
  * OpenAPI spec version: 1.0
  */
+import type { GetAddressDto } from './getAddressDto';
 
-export interface CreateLocationDto {
+export interface GetLocationDto {
+  id: string;
   name: string;
-  addressId: string;
+  address: GetAddressDto;
 }

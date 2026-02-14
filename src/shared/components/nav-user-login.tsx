@@ -1,20 +1,20 @@
 import { ChevronsUpDown, LogOut, LogIn } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@shared/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@shared/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar';
+} from '@shared/components/ui/sidebar';
 import { useMsal, useIsAuthenticated } from '@azure/msal-react';
-import { loginRequest } from '../auth/auth-config';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { loginRequest } from '@features/auth/auth-config';
+import { useCurrentUser } from '@shared/hooks/useCurrentUser';
 import { useEffect } from 'react';
 
 export function NavUserLogin() {

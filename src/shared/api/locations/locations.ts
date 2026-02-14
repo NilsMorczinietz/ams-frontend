@@ -135,6 +135,181 @@ export const useLocationControllerCreateLocation = <
     queryClient
   );
 };
+export type locationControllerGetAllLocationsResponse200 = {
+  data: GetLocationDto[];
+  status: 200;
+};
+
+export type locationControllerGetAllLocationsResponseSuccess =
+  locationControllerGetAllLocationsResponse200 & {
+    headers: Headers;
+  };
+export type locationControllerGetAllLocationsResponse =
+  locationControllerGetAllLocationsResponseSuccess;
+
+export const getLocationControllerGetAllLocationsUrl = () => {
+  return `/api/v1/locations`;
+};
+
+export const locationControllerGetAllLocations = async (
+  options?: RequestInit
+): Promise<locationControllerGetAllLocationsResponse> => {
+  const res = await fetch(getLocationControllerGetAllLocationsUrl(), {
+    ...options,
+    method: 'GET',
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: locationControllerGetAllLocationsResponse['data'] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as locationControllerGetAllLocationsResponse;
+};
+
+export const getLocationControllerGetAllLocationsQueryKey = () => {
+  return [`/api/v1/locations`] as const;
+};
+
+export const getLocationControllerGetAllLocationsQueryOptions = <
+  TData = Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+  TError = unknown,
+>(options?: {
+  query?: Partial<
+    UseQueryOptions<
+      Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+      TError,
+      TData
+    >
+  >;
+  fetch?: RequestInit;
+}) => {
+  const { query: queryOptions, fetch: fetchOptions } = options ?? {};
+
+  const queryKey =
+    queryOptions?.queryKey ?? getLocationControllerGetAllLocationsQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof locationControllerGetAllLocations>>
+  > = ({ signal }) =>
+    locationControllerGetAllLocations({ signal, ...fetchOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+    TError,
+    TData
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type LocationControllerGetAllLocationsQueryResult = NonNullable<
+  Awaited<ReturnType<typeof locationControllerGetAllLocations>>
+>;
+export type LocationControllerGetAllLocationsQueryError = unknown;
+
+export function useLocationControllerGetAllLocations<
+  TData = Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+  TError = unknown,
+>(
+  options: {
+    query: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+          TError,
+          Awaited<ReturnType<typeof locationControllerGetAllLocations>>
+        >,
+        'initialData'
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient
+): DefinedUseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useLocationControllerGetAllLocations<
+  TData = Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+        TError,
+        TData
+      >
+    > &
+      Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+          TError,
+          Awaited<ReturnType<typeof locationControllerGetAllLocations>>
+        >,
+        'initialData'
+      >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+export function useLocationControllerGetAllLocations<
+  TData = Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+};
+
+export function useLocationControllerGetAllLocations<
+  TData = Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+  TError = unknown,
+>(
+  options?: {
+    query?: Partial<
+      UseQueryOptions<
+        Awaited<ReturnType<typeof locationControllerGetAllLocations>>,
+        TError,
+        TData
+      >
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient
+): UseQueryResult<TData, TError> & {
+  queryKey: DataTag<QueryKey, TData, TError>;
+} {
+  const queryOptions =
+    getLocationControllerGetAllLocationsQueryOptions(options);
+
+  const query = useQuery(queryOptions, queryClient) as UseQueryResult<
+    TData,
+    TError
+  > & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
 export type locationControllerGetLocationByIdResponse200 = {
   data: GetLocationDto;
   status: 200;

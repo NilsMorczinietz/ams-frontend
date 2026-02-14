@@ -1,12 +1,12 @@
 'use client';
 
 import { GraduationCap } from 'lucide-react';
-import { DropdownMenu } from '@/components/ui/dropdown-menu';
+import { DropdownMenu } from '@shared/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
+} from '@shared/components/ui/sidebar';
 
 export function NavHeader() {
   return (

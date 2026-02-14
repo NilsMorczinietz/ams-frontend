@@ -6,8 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 
+export * from './createAddressDto';
 export * from './createLocationDto';
 export * from './createUserDto';
+export * from './getAddressDto';
 export * from './getLocationDto';
 export * from './getUserDto';
 export * from './healthControllerDetails200';

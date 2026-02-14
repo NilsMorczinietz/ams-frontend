@@ -6,7 +6,10 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface UpdateLocationDto {
-  name?: string;
-  addressId?: string;
+export interface GetAddressDto {
+  street: string;
+  houseNumber: number;
+  zipCode: number;
+  city: string;
+  country: string;
 }

@@ -1,12 +1,13 @@
 'use client';
 
 import { type LucideIcon } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import {
   SidebarGroup,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from '@/components/ui/sidebar';
+} from '@shared/components/ui/sidebar';
 
 export function NavMenu({
   items,
@@ -23,10 +24,10 @@ export function NavMenu({
         {items.map((item) => (
           <SidebarMenuItem key={item.name}>
             <SidebarMenuButton tooltip={item.name} asChild>
-              <a href={item.url}>
+              <Link to={item.url}>
                 <item.icon />
                 <span>{item.name}</span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}

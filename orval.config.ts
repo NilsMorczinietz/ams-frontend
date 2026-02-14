@@ -4,8 +4,8 @@ export default defineConfig({
   ams: {
     output: {
       mode: 'tags-split',
-      target: 'src/api/ams.ts',
-      schemas: 'src/api/model',
+      target: 'src/shared/api/ams.ts',
+      schemas: 'src/shared/api/model',
       client: 'react-query',
     },
     input: {

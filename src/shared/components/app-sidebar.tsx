@@ -1,29 +1,29 @@
 'use client';
 
 import * as React from 'react';
-import { House } from 'lucide-react';
-import { NavMenu } from '@/components/nav-menu';
-import { NavUserLogin } from '@/components/nav-user-login';
-import { NavHeader } from '@/components/nav-header';
+import { House, MapPin } from 'lucide-react';
+import { NavMenu } from '@shared/components/nav-menu';
+import { NavUserLogin } from '@shared/components/nav-user-login';
+import { NavHeader } from '@shared/components/nav-header';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from '@/components/ui/sidebar';
+} from '@shared/components/ui/sidebar';
 
 const data = {
-  user: {
-    firstname: 'Max',
-    lastname: 'Mustermann',
-    email: 'max@msutermann.com',
-  },
   items: [
     {
       name: 'Home',
-      url: '',
+      url: '/',
       icon: House,
+    },
+    {
+      name: 'Standorte',
+      url: '/standorte',
+      icon: MapPin,
     },
   ],
 };
@@ -38,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavMenu items={data.items} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUserLogin user={data.user} />
+        <NavUserLogin />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
