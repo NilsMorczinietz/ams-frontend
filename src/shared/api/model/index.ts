@@ -7,9 +7,11 @@
  */
 
 export * from './createAddressDto';
+export * from './createCourseDto';
 export * from './createLocationDto';
 export * from './createUserDto';
 export * from './getAddressDto';
+export * from './getCourseDto';
 export * from './getLocationDto';
 export * from './getUserDto';
 export * from './healthControllerDetails200';
@@ -28,5 +30,6 @@ export * from './healthControllerReady503';
 export * from './healthControllerReady503Details';
 export * from './healthControllerReady503Error';
 export * from './healthControllerReady503Info';
+export * from './updateCourseDto';
 export * from './updateLocationDto';
 export * from './updateUserDto';

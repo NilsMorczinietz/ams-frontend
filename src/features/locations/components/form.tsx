@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { toast } from 'sonner';
 import { Button } from '@shared/components/ui/button';
 import { Input } from '@shared/components/ui/input';
 import {
@@ -20,17 +21,24 @@ import {
   FormLabel,
   FormMessage,
 } from '@shared/components/ui/form';
-import { useLocationControllerCreateLocation } from '@api/locations/locations';
-import { getLocationControllerGetAllLocationsQueryKey } from '@api/locations/locations';
-import type { CreateLocationDto } from '@api/model';
+import {
+  useLocationControllerCreateLocation,
+  useLocationControllerUpdateLocation,
+  getLocationControllerGetAllLocationsQueryKey,
+} from '@api/locations/locations';
+import type {
+  CreateLocationDto,
+  GetLocationDto,
+  UpdateLocationDto,
+} from '@api/model';
 import { useQueryClient } from '@tanstack/react-query';
 
 const locationFormSchema = z.object({
   name: z
     .string()
-    .min(1, 'Name ist erforderlich')
-    .min(3, 'Name muss mindestens 3 Zeichen lang sein')
-    .max(100, 'Name darf maximal 100 Zeichen lang sein'),
+    .min(1, 'Bezeichnung ist erforderlich')
+    .min(3, 'Bezeichnung muss mindestens 3 Zeichen lang sein')
+    .max(100, 'Bezeichnung darf maximal 100 Zeichen lang sein'),
   address: z.object({
     street: z
       .string()
@@ -62,14 +70,23 @@ type LocationFormValues = z.infer<typeof locationFormSchema>;
 interface LocationFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  location?: GetLocationDto | null;
 }
 
-export function LocationForm({ open, onOpenChange }: LocationFormProps) {
+export function LocationForm({
+  open,
+  onOpenChange,
+  location,
+}: LocationFormProps) {
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useLocationControllerCreateLocation(
-    {},
-    queryClient
-  );
+
+  const { mutate: createLocation, isPending: isCreating } =
+    useLocationControllerCreateLocation({}, queryClient);
+  const { mutate: updateLocation, isPending: isUpdating } =
+    useLocationControllerUpdateLocation({}, queryClient);
+
+  const isPending = isCreating || isUpdating;
+  const isEditMode = !!location;
 
   const form = useForm<LocationFormValues>({
     resolver: zodResolver(locationFormSchema),
@@ -85,36 +102,85 @@ export function LocationForm({ open, onOpenChange }: LocationFormProps) {
     },
   });
 
-  // Reset form when sheet closes
   useEffect(() => {
     if (!open) {
       form.reset();
+    } else if (location) {
+      // Edit mode
+      form.reset({
+        name: location.name,
+        address: {
+          street: location.address.street,
+          houseNumber: location.address.houseNumber,
+          zipCode: location.address.zipCode,
+          city: location.address.city,
+          country: location.address.country,
+        },
+      });
+    } else {
+      // Create mode
+      form.reset({
+        name: '',
+        address: {
+          street: '',
+          houseNumber: 0,
+          zipCode: 0,
+          city: '',
+          country: 'Deutschland',
+        },
+      });
     }
-  }, [open, form]);
+  }, [open, location, form]);
 
   const onSubmit = (data: LocationFormValues) => {
-    mutate(
-      { data: data as CreateLocationDto },
-      {
-        onSuccess: () => {
-          void queryClient.refetchQueries({
-            queryKey: getLocationControllerGetAllLocationsQueryKey(),
-          });
-          form.reset();
-          onOpenChange(false);
-        },
-      }
-    );
+    if (isEditMode && location) {
+      updateLocation(
+        { id: location.id, data: data as UpdateLocationDto },
+        {
+          onSuccess: () => {
+            void queryClient.refetchQueries({
+              queryKey: getLocationControllerGetAllLocationsQueryKey(),
+            });
+            toast.success('Standort erfolgreich aktualisiert');
+            onOpenChange(false);
+            form.reset();
+          },
+          onError: () => {
+            toast.error('Fehler beim Aktualisieren des Standorts');
+          },
+        }
+      );
+    } else {
+      createLocation(
+        { data: data as CreateLocationDto },
+        {
+          onSuccess: () => {
+            void queryClient.refetchQueries({
+              queryKey: getLocationControllerGetAllLocationsQueryKey(),
+            });
+            toast.success('Standort erfolgreich erstellt');
+            onOpenChange(false);
+            form.reset();
+          },
+          onError: () => {
+            toast.error('Fehler beim Erstellen des Standorts');
+          },
+        }
+      );
+    }
   };
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Neuer Standort</SheetTitle>
+          <SheetTitle>
+            {isEditMode ? 'Standort bearbeiten' : 'Neuer Standort'}
+          </SheetTitle>
           <SheetDescription>
-            Erstellen Sie einen neuen Standort. Füllen Sie alle Pflichtfelder
-            aus.
+            {isEditMode
+              ? 'Bearbeiten Sie die Standortdaten. Ändern Sie die gewünschten Felder.'
+              : 'Erstellen Sie einen neuen Standort. Füllen Sie alle Pflichtfelder aus.'}
           </SheetDescription>
         </SheetHeader>
 
@@ -129,7 +195,7 @@ export function LocationForm({ open, onOpenChange }: LocationFormProps) {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>Bezeichnung</FormLabel>
                     <FormControl>
                       <Input placeholder="z.B. Feuerwache Monheim" {...field} />
                     </FormControl>
@@ -165,12 +231,11 @@ export function LocationForm({ open, onOpenChange }: LocationFormProps) {
                         <Input
                           type="number"
                           placeholder="z.B. 123"
+                          {...field}
                           value={field.value || ''}
                           onChange={(e) =>
                             field.onChange(e.target.valueAsNumber || 0)
                           }
-                          onBlur={field.onBlur}
-                          name={field.name}
                         />
                       </FormControl>
                       <FormMessage />
@@ -189,12 +254,11 @@ export function LocationForm({ open, onOpenChange }: LocationFormProps) {
                           <Input
                             type="number"
                             placeholder="z.B. 40789"
+                            {...field}
                             value={field.value || ''}
                             onChange={(e) =>
                               field.onChange(e.target.valueAsNumber || 0)
                             }
-                            onBlur={field.onBlur}
-                            name={field.name}
                           />
                         </FormControl>
                         <FormMessage />
@@ -243,7 +307,13 @@ export function LocationForm({ open, onOpenChange }: LocationFormProps) {
                 Abbrechen
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? 'Wird erstellt...' : 'Erstellen'}
+                {isPending
+                  ? isEditMode
+                    ? 'Wird gespeichert...'
+                    : 'Wird erstellt...'
+                  : isEditMode
+                    ? 'Speichern'
+                    : 'Erstellen'}
               </Button>
             </SheetFooter>
           </form>

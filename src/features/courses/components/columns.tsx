@@ -1,4 +1,4 @@
-import type { GetLocationDto } from '@/shared/api/model';
+import type { GetCourseDto } from '@/shared/api/model';
 import { Button } from '@/shared/components/ui/button';
 import {
   AlertDialog,
@@ -15,9 +15,9 @@ import type { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, Pencil, Trash } from 'lucide-react';
 
 export const createColumns = (
-  onEdit: (location: GetLocationDto) => void,
-  onDelete: (location: GetLocationDto) => void
-): ColumnDef<GetLocationDto>[] => [
+  onEdit: (course: GetCourseDto) => void,
+  onDelete: (course: GetCourseDto) => void
+): ColumnDef<GetCourseDto>[] => [
   {
     accessorKey: 'name',
     header: ({ column }) => {
@@ -33,71 +33,45 @@ export const createColumns = (
     },
   },
   {
-    accessorKey: 'address.street',
-    header: 'Straße',
-  },
-  {
-    accessorKey: 'address.houseNumber',
-    header: 'Hausnummer',
-  },
-  {
-    accessorKey: 'address.zipCode',
-    header: 'PLZ',
-  },
-  {
-    accessorKey: 'address.city',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Stadt
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: 'address.country',
-    header: 'Land',
+    accessorKey: 'abbreviation',
+    header: 'Kürzel',
   },
   {
     id: 'actions',
     cell: ({ row }) => {
-      const location = row.original;
+      const course = row.original;
 
       return (
         <div className="flex gap-1 items-center">
           <Button
             variant="ghost"
             className="h-7 w-7 p-0"
-            onClick={() => onEdit(location)}
+            onClick={() => onEdit(course)}
           >
-            <span className="sr-only">Standort bearbeiten</span>
+            <span className="sr-only">Lehrgang bearbeiten</span>
             <Pencil className="h-4 w-4" />
           </Button>
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="ghost" className="h-7 w-7 p-0">
-                <span className="sr-only">Standort löschen</span>
+                <span className="sr-only">Lehrgang löschen</span>
                 <Trash className="h-4 w-4" />
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>
-                  Möchten Sie diesen Standort wirklich löschen?
+                  Möchten Sie diesen Lehrgang wirklich löschen?
                 </AlertDialogTitle>
                 <AlertDialogDescription>
                   Diese Aktion kann nicht rückgängig gemacht werden. Der
-                  Standort "{location.name}" wird permanent aus der Datenbank
+                  Lehrgang "{course.name}" wird permanent aus der Datenbank
                   gelöscht.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                <AlertDialogAction onClick={() => onDelete(location)}>
+                <AlertDialogAction onClick={() => onDelete(course)}>
                   Löschen
                 </AlertDialogAction>
               </AlertDialogFooter>

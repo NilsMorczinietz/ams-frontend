@@ -1,46 +1,47 @@
 import { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import {
-  useLocationControllerGetAllLocations,
-  useLocationControllerDeleteLocationById,
-  getLocationControllerGetAllLocationsQueryKey,
-} from '@api/locations/locations';
+  useCourseControllerGetAllCourses,
+  useCourseControllerDeleteCourseById,
+  getCourseControllerGetAllCoursesQueryKey,
+} from '@api/courses/courses';
 import {
   createColumns,
   DataTable,
-  LocationForm,
-} from '@/features/locations/components';
+  CourseForm,
+} from '@/features/courses/components';
 import { Button } from '@shared/components/ui/button';
 import { IconPlus } from '@tabler/icons-react';
-import type { GetLocationDto } from '@/shared/api/model';
+import type { GetCourseDto } from '@/shared/api/model';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 
-export default function LocationsPage() {
+export default function CoursesPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedLocation, setSelectedLocation] =
-    useState<GetLocationDto | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<GetCourseDto | null>(
+    null
+  );
   const queryClient = useQueryClient();
   const { data, isLoading, isError, error } =
-    useLocationControllerGetAllLocations();
-  const { mutate: deleteLocation } = useLocationControllerDeleteLocationById(
+    useCourseControllerGetAllCourses();
+  const { mutate: deleteCourse } = useCourseControllerDeleteCourseById(
     {},
     queryClient
   );
 
-  const handleEdit = (location: GetLocationDto) => {
-    setSelectedLocation(location);
+  const handleEdit = (course: GetCourseDto) => {
+    setSelectedCourse(course);
     setIsFormOpen(true);
   };
 
-  const handleDelete = (location: GetLocationDto) => {
-    deleteLocation(
-      { id: location.id },
+  const handleDelete = (course: GetCourseDto) => {
+    deleteCourse(
+      { id: course.id },
       {
         onSuccess: () => {
-          toast.success('Standort erfolgreich gelöscht');
+          toast.success('Kurs erfolgreich gelöscht');
           void queryClient.invalidateQueries({
-            queryKey: getLocationControllerGetAllLocationsQueryKey(),
+            queryKey: getCourseControllerGetAllCoursesQueryKey(),
           });
         },
         onError: (error) => {
@@ -55,7 +56,7 @@ export default function LocationsPage() {
   const handleFormClose = (open: boolean) => {
     setIsFormOpen(open);
     if (!open) {
-      setSelectedLocation(null);
+      setSelectedCourse(null);
     }
   };
 
@@ -65,9 +66,9 @@ export default function LocationsPage() {
     <div className="flex flex-1 flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Standorte</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Lehrgänge</h1>
           <p className="text-muted-foreground">
-            Verwalten Sie Ihre Standorte und deren Informationen.
+            Verwalten Sie Ihre Lehrgänge und deren Informationen.
           </p>
         </div>
       </div>
@@ -100,17 +101,17 @@ export default function LocationsPage() {
             <div className="rounded-lg border bg-card p-6">
               <div className="flex flex-col items-center justify-center gap-4">
                 <p className="text-sm text-muted-foreground">
-                  Noch keine Standorte vorhanden.
+                  Noch keine Kurse vorhanden.
                 </p>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setSelectedLocation(null);
+                    setSelectedCourse(null);
                     setIsFormOpen(true);
                   }}
                 >
-                  <IconPlus /> Ersten Standort anlegen
+                  <IconPlus /> Ersten Lehrgang anlegen
                 </Button>
               </div>
             </div>
@@ -121,11 +122,11 @@ export default function LocationsPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    setSelectedLocation(null);
+                    setSelectedCourse(null);
                     setIsFormOpen(true);
                   }}
                 >
-                  <IconPlus /> Standort anlegen
+                  <IconPlus /> Lehrgang anlegen
                 </Button>
               </div>
               <DataTable columns={columns} data={data.data} />
@@ -134,10 +135,10 @@ export default function LocationsPage() {
         </>
       )}
 
-      <LocationForm
+      <CourseForm
         open={isFormOpen}
         onOpenChange={handleFormClose}
-        location={selectedLocation}
+        course={selectedCourse}
       />
     </div>
   );

@@ -3,10 +3,12 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@features/auth/hooks/auth-provider.tsx';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Toaster } from '@shared/components/ui/sonner';
 import './index.css';
 import App from './App.tsx';
 import HomePage from './pages/home.tsx';
 import LocationsPage from './pages/locations.tsx';
+import CoursesPage from './pages/courses.tsx';
 
 const queryClient = new QueryClient();
 
@@ -19,10 +21,12 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<App />}>
               <Route index element={<HomePage />} />
               <Route path="standorte" element={<LocationsPage />} />
+              <Route path="lehrgänge" element={<CoursesPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
       </AuthProvider>
+      <Toaster />
     </QueryClientProvider>
   </StrictMode>
 );
