@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
-import { DataTable } from '@/features/courses/components';
+import { SortableDataTable } from '@/features/ranks/components';
 import { createColumns } from '@/features/ranks/components';
 import { Button } from '@shared/components/ui/button';
 import { IconPlus } from '@tabler/icons-react';
@@ -11,6 +11,7 @@ import {
   getRankControllerGetAllRanksQueryKey,
   useRankControllerDeleteRankById,
   useRankControllerGetAllRanks,
+  useRankControllerReorderRanks,
 } from '@/shared/api/ranks/ranks';
 import { RankForm } from '@/features/ranks/components/form';
 
@@ -23,6 +24,39 @@ export default function RanksPage() {
     {},
     queryClient
   );
+  const { mutate: reorderRanks } = useRankControllerReorderRanks(
+    {},
+    queryClient
+  );
+
+  const handleReorder = (reorderedItems: GetRankDto[]) => {
+    reorderRanks(
+      {
+        data: {
+          ranks: reorderedItems.map((item) => ({
+            id: item.id,
+            level: item.level,
+          })),
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success('Reihenfolge erfolgreich aktualisiert');
+          void queryClient.invalidateQueries({
+            queryKey: getRankControllerGetAllRanksQueryKey(),
+          });
+        },
+        onError: (error) => {
+          toast.error(
+            `Fehler beim Aktualisieren: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`
+          );
+          void queryClient.invalidateQueries({
+            queryKey: getRankControllerGetAllRanksQueryKey(),
+          });
+        },
+      }
+    );
+  };
 
   const handleEdit = (rank: GetRankDto) => {
     setSelectedRank(rank);
@@ -83,7 +117,7 @@ export default function RanksPage() {
               <p className="text-sm text-destructive/90">
                 {error instanceof Error
                   ? error.message
-                  : 'Die Standorte konnten nicht geladen werden.'}
+                  : 'Die Dienstgrade konnten nicht geladen werden.'}
               </p>
             </div>
           </div>
@@ -124,7 +158,15 @@ export default function RanksPage() {
                   <IconPlus /> Dienstgrad anlegen
                 </Button>
               </div>
-              <DataTable columns={columns} data={data.data} />
+              <SortableDataTable
+                columns={columns}
+                data={data.data}
+                onReorder={handleReorder}
+              />
+              <p className="mt-2 text-xs text-muted-foreground">
+                Niedrigster Rang oben, höchster Rang unten. Zum Umsortieren die
+                Zeilen ziehen.
+              </p>
             </div>
           )}
         </>

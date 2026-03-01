@@ -12,7 +12,7 @@ import {
   AlertDialogTrigger,
 } from '@shared/components/ui/alert-dialog';
 import type { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown, Pencil, Trash } from 'lucide-react';
+import { Pencil, Trash } from 'lucide-react';
 
 export const createColumns = (
   onEdit: (rank: GetRankDto) => void,
@@ -20,17 +20,7 @@ export const createColumns = (
 ): ColumnDef<GetRankDto>[] => [
   {
     accessorKey: 'name',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Bezeichnung
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: 'Bezeichnung',
   },
   {
     accessorKey: 'abbreviation',

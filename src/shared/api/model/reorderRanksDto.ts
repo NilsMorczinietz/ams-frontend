@@ -5,9 +5,8 @@
  * AMS API documentation
  * OpenAPI spec version: 1.0
  */
+import type { RankOrderItem } from './rankOrderItem';
 
-export interface UpdateRankDto {
-  name?: string;
-  abbreviation?: string;
-  level?: number;
+export interface ReorderRanksDto {
+  ranks: RankOrderItem[];
 }

@@ -32,6 +32,8 @@ export * from './healthControllerReady503';
 export * from './healthControllerReady503Details';
 export * from './healthControllerReady503Error';
 export * from './healthControllerReady503Info';
+export * from './rankOrderItem';
+export * from './reorderRanksDto';
 export * from './updateCourseDto';
 export * from './updateLocationDto';
 export * from './updateRankDto';

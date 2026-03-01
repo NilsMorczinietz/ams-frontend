@@ -6,8 +6,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface UpdateRankDto {
-  name?: string;
-  abbreviation?: string;
-  level?: number;
+export interface RankOrderItem {
+  id: string;
+  level: number;
 }

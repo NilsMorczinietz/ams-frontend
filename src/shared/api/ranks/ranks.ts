@@ -21,7 +21,12 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query';
 
-import type { CreateRankDto, GetRankDto, UpdateRankDto } from '.././model';
+import type {
+  CreateRankDto,
+  GetRankDto,
+  ReorderRanksDto,
+  UpdateRankDto,
+} from '.././model';
 
 export type rankControllerCreateRankResponse201 = {
   data: GetRankDto;
@@ -703,6 +708,114 @@ export const useRankControllerDeleteRankById = <
 > => {
   return useMutation(
     getRankControllerDeleteRankByIdMutationOptions(options),
+    queryClient
+  );
+};
+export type rankControllerReorderRanksResponse204 = {
+  data: void;
+  status: 204;
+};
+
+export type rankControllerReorderRanksResponseSuccess =
+  rankControllerReorderRanksResponse204 & {
+    headers: Headers;
+  };
+export type rankControllerReorderRanksResponse =
+  rankControllerReorderRanksResponseSuccess;
+
+export const getRankControllerReorderRanksUrl = () => {
+  return `/api/v1/ranks/reorder`;
+};
+
+export const rankControllerReorderRanks = async (
+  reorderRanksDto: ReorderRanksDto,
+  options?: RequestInit
+): Promise<rankControllerReorderRanksResponse> => {
+  const res = await fetch(getRankControllerReorderRanksUrl(), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(reorderRanksDto),
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: rankControllerReorderRanksResponse['data'] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as rankControllerReorderRanksResponse;
+};
+
+export const getRankControllerReorderRanksMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof rankControllerReorderRanks>>,
+    TError,
+    { data: ReorderRanksDto },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof rankControllerReorderRanks>>,
+  TError,
+  { data: ReorderRanksDto },
+  TContext
+> => {
+  const mutationKey = ['rankControllerReorderRanks'];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof rankControllerReorderRanks>>,
+    { data: ReorderRanksDto }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return rankControllerReorderRanks(data, fetchOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type RankControllerReorderRanksMutationResult = NonNullable<
+  Awaited<ReturnType<typeof rankControllerReorderRanks>>
+>;
+export type RankControllerReorderRanksMutationBody = ReorderRanksDto;
+export type RankControllerReorderRanksMutationError = unknown;
+
+export const useRankControllerReorderRanks = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof rankControllerReorderRanks>>,
+      TError,
+      { data: ReorderRanksDto },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof rankControllerReorderRanks>>,
+  TError,
+  { data: ReorderRanksDto },
+  TContext
+> => {
+  return useMutation(
+    getRankControllerReorderRanksMutationOptions(options),
     queryClient
   );
 };

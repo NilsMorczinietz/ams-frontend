@@ -12,6 +12,7 @@ export interface GetUserDto {
   oid: string;
   name: string;
   email: string;
+  joinedAt: string;
   createdAt: string;
   updatedAt: string;
   addressId: string;
