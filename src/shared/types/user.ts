@@ -1,5 +1,5 @@
 /**
- * User data derived from Azure AD authentication
+ * User data derived from Keycloak authentication
  */
 export interface User {
   id: string;

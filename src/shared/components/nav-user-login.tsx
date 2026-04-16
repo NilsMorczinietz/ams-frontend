@@ -12,33 +12,23 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@shared/components/ui/sidebar';
-import { useMsal, useIsAuthenticated } from '@azure/msal-react';
-import { loginRequest } from '@features/auth/auth-config';
+import { useAuth } from '@features/auth/hooks/auth-context';
 import { useCurrentUser } from '@shared/hooks/useCurrentUser';
-import { useEffect } from 'react';
 
 export function NavUserLogin() {
   const { isMobile } = useSidebar();
-  const isAuthenticated = useIsAuthenticated();
-  const { instance, accounts } = useMsal();
+  const { isAuthenticated, isInitialized, login, logout } = useAuth();
   const user = useCurrentUser();
 
   const handleLoginRedirect = () => {
-    void instance.loginRedirect(loginRequest);
+    void login();
   };
 
   const handleLogoutRedirect = () => {
-    void instance.logoutRedirect();
+    void logout();
   };
 
-  useEffect(() => {
-    console.log('Authentication status changed:', isAuthenticated);
-    console.log('Current user data:', user);
-    console.log('Current instance:', instance);
-    console.log('Current accounts:', accounts);
-  }, [isAuthenticated, user, instance, accounts]);
-
-  if (!isAuthenticated || !user) {
+  if (!isInitialized || !isAuthenticated || !user) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>

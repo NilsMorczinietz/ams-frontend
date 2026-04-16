@@ -8,12 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@azure/msal-browser':
-        specifier: ^5.0.2
-        version: 5.0.2
-      '@azure/msal-react':
-        specifier: ^5.0.2
-        version: 5.0.2(@azure/msal-browser@5.0.2)(react@19.2.3)
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -68,6 +62,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      keycloak-js:
+        specifier: ^26.2.1
+        version: 26.2.3
       lucide-react:
         specifier: ^0.563.0
         version: 0.563.0(react@19.2.3)
@@ -167,21 +164,6 @@ importers:
         version: 7.3.1(@types/node@24.10.9)(jiti@2.6.1)(lightningcss@1.30.2)(yaml@2.8.2)
 
 packages:
-
-  '@azure/msal-browser@5.0.2':
-    resolution: {integrity: sha512-tTrADo/ZNE8O1vzYJ2lmmZQJ0VbeLWzfjILMMENWMxvcwp6p2ibbVaHj3I1+Lpvp4y5Gg0tQiPQdlr+fICrJ0A==}
-    engines: {node: '>=0.8.0'}
-
-  '@azure/msal-common@16.0.2':
-    resolution: {integrity: sha512-ZJ/UR7lyqIntURrIJCyvScwJFanM9QhJYcJCheB21jZofGKpP9QxWgvADANo7UkresHKzV+6YwoeZYP7P7HvUg==}
-    engines: {node: '>=0.8.0'}
-
-  '@azure/msal-react@5.0.2':
-    resolution: {integrity: sha512-xMPjuTHf9alr+okySAgb3NRNbQJ0RrnuMaNxVn4YqqBpubCV7/DQbRn1CYN7WulJxrSrnW1S5lrqd7B1AkA8HA==}
-    engines: {node: '>=20'}
-    peerDependencies:
-      '@azure/msal-browser': ^5.0.2
-      react: ^19.2.1
 
   '@babel/code-frame@7.28.6':
     resolution: {integrity: sha512-JYgintcMjRiCvS8mMECzaEn+m3PfoQiyqukOMCCVQtoJGYJw8j/8LBJEiqkHLkfwCcs74E3pbAUFNg7d9VNJ+Q==}
@@ -2299,6 +2281,9 @@ packages:
     resolution: {integrity: sha512-p/nXbhSEcu3pZRdkW1OfJhpsVtW1gd4Wa1fnQc9YLiTfAjn0312eMKimbdIQzuZl9aa9xUGaRlP9T/CJE/ditQ==}
     engines: {node: '>=0.10.0'}
 
+  keycloak-js@26.2.3:
+    resolution: {integrity: sha512-widjzw/9T6bHRgEp6H/Se3NCCarU7u5CwFKBcwtu7xfA1IfdZb+7Q7/KGusAnBo34Vtls8Oz9vzSqkQvQ7+b4Q==}
+
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
@@ -2983,17 +2968,6 @@ packages:
     resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
 
 snapshots:
-
-  '@azure/msal-browser@5.0.2':
-    dependencies:
-      '@azure/msal-common': 16.0.2
-
-  '@azure/msal-common@16.0.2': {}
-
-  '@azure/msal-react@5.0.2(@azure/msal-browser@5.0.2)(react@19.2.3)':
-    dependencies:
-      '@azure/msal-browser': 5.0.2
-      react: 19.2.3
 
   '@babel/code-frame@7.28.6':
     dependencies:
@@ -5171,6 +5145,8 @@ snapshots:
       graceful-fs: 4.2.11
 
   jsonpointer@5.0.1: {}
+
+  keycloak-js@26.2.3: {}
 
   keyv@4.5.4:
     dependencies:

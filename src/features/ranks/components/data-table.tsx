@@ -29,6 +29,9 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
+  // TanStack Table is currently flagged by react-hooks/incompatible-library.
+  // This usage is intentional and safe in this component.
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data,
     columns,

@@ -1,50 +1,23 @@
-import { LogLevel } from '@azure/msal-browser';
+import type { KeycloakConfig, KeycloakInitOptions } from 'keycloak-js';
 
-export const msalConfig = {
-  auth: {
-    // TODO: Put in .env file
-    clientId: '2f05f649-cab3-419c-86b8-1f617d503cf0',
-    authority:
-      'https://login.microsoftonline.com/c38a7252-6cb6-41fb-839b-a7a89aeb0af9/',
-    redirectUri: window.location.origin,
-    postLogoutRedirectUri: window.location.origin,
-    navigateToLoginRequestUrl: false,
-  },
-  cache: {
-    cacheLocation: 'sessionStorage',
-    storeAuthStateInCookie: false,
-  },
-  system: {
-    loggerOptions: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      loggerCallback: (level: any, message: any, containsPii: any) => {
-        if (containsPii) {
-          return;
-        }
-        switch (level) {
-          case LogLevel.Error:
-            console.error(message);
-            return;
+function requireEnv(name: string): string {
+  const env = import.meta.env as Record<string, string | undefined>;
+  const value = env[name];
+  if (!value || typeof value !== 'string' || value.trim().length === 0) {
+    throw new Error(`Missing required environment variable: ${name}`);
+  }
 
-          case LogLevel.Info:
-            // console.info(message);
-            return;
+  return value;
+}
 
-          case LogLevel.Verbose:
-            console.debug(message);
-            return;
-
-          case LogLevel.Warning:
-            console.warn(message);
-            return;
-          default:
-            return;
-        }
-      },
-    },
-  },
+export const keycloakConfig: KeycloakConfig = {
+  url: requireEnv('VITE_KEYCLOAK_URL'),
+  realm: requireEnv('VITE_KEYCLOAK_REALM'),
+  clientId: requireEnv('VITE_KEYCLOAK_CLIENT_ID'),
 };
 
-export const loginRequest = {
-  scopes: ['openid', 'profile', 'email'],
+export const keycloakInitOptions: KeycloakInitOptions = {
+  onLoad: 'check-sso',
+  pkceMethod: 'S256',
+  checkLoginIframe: false,
 };

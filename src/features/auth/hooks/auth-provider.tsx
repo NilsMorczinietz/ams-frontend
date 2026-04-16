@@ -1,35 +1,111 @@
-import { EventType, type AuthenticationResult } from '@azure/msal-browser';
-import { MsalProvider } from '@azure/msal-react';
-import { msalInstance } from './msalInstance';
-import { useEffect } from 'react';
-import type { ReactNode } from 'react';
+import Keycloak, { type KeycloakTokenParsed } from 'keycloak-js';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
+import { keycloakConfig, keycloakInitOptions } from '../auth-config';
+import { AuthContext, type AuthContextValue } from './auth-context';
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-  useEffect(() => {
-    const callbackId = msalInstance.addEventCallback((event) => {
-      if (event.eventType === EventType.LOGIN_SUCCESS && event.payload) {
-        const result = event.payload as AuthenticationResult;
-        msalInstance.setActiveAccount(result.account);
-      }
+const keycloak = new Keycloak(keycloakConfig);
+let keycloakInitPromise: Promise<boolean> | null = null;
+const appRedirectUri = window.location.origin;
+
+function initializeKeycloak(): Promise<boolean> {
+  if (!keycloakInitPromise) {
+    keycloakInitPromise = keycloak.init({
+      ...keycloakInitOptions,
+      redirectUri: appRedirectUri,
     });
+  }
+
+  return keycloakInitPromise;
+}
+
+export function AuthProvider({ children }: AuthProviderProps) {
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [tokenParsed, setTokenParsed] = useState<KeycloakTokenParsed>();
+
+  const syncAuthState = useCallback(() => {
+    setIsAuthenticated(Boolean(keycloak.authenticated));
+    setTokenParsed(keycloak.tokenParsed);
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    void initializeKeycloak()
+      .then(() => {
+        if (!isMounted) {
+          return;
+        }
+
+        syncAuthState();
+      })
+      .catch((error: unknown) => {
+        console.error('Keycloak initialization failed', error);
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsInitialized(true);
+        }
+      });
+
+    keycloak.onAuthSuccess = () => {
+      syncAuthState();
+    };
+
+    keycloak.onAuthRefreshSuccess = () => {
+      syncAuthState();
+    };
+
+    keycloak.onAuthLogout = () => {
+      setIsAuthenticated(false);
+      setTokenParsed(undefined);
+    };
+
+    keycloak.onTokenExpired = () => {
+      void keycloak.updateToken(30).catch(() => {
+        setIsAuthenticated(false);
+        setTokenParsed(undefined);
+      });
+    };
 
     return () => {
-      if (callbackId) {
-        msalInstance.removeEventCallback(callbackId);
-      }
+      isMounted = false;
+
+      keycloak.onAuthSuccess = undefined;
+      keycloak.onAuthRefreshSuccess = undefined;
+      keycloak.onAuthLogout = undefined;
+      keycloak.onTokenExpired = undefined;
     };
+  }, [syncAuthState]);
+
+  const login = useCallback(async () => {
+    await keycloak.login({ redirectUri: appRedirectUri });
   }, []);
 
-  useEffect(() => {
-    const accounts = msalInstance.getAllAccounts();
-    if (accounts.length > 0 && !msalInstance.getActiveAccount()) {
-      msalInstance.setActiveAccount(accounts[0]);
-    }
+  const logout = useCallback(async () => {
+    await keycloak.logout({ redirectUri: appRedirectUri });
   }, []);
 
-  return <MsalProvider instance={msalInstance}>{children}</MsalProvider>;
-};
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      isAuthenticated,
+      isInitialized,
+      tokenParsed,
+      login,
+      logout,
+    }),
+    [isAuthenticated, isInitialized, tokenParsed, login, logout]
+  );
+
+  return <AuthContext value={value}>{children}</AuthContext>;
+}
