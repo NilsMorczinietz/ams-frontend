@@ -20,20 +20,14 @@ export function NavUserLogin() {
   const { isAuthenticated, isInitialized, login, logout } = useAuth();
   const user = useCurrentUser();
 
-  const handleLoginRedirect = () => {
-    void login();
-  };
-
-  const handleLogoutRedirect = () => {
-    void logout();
-  };
-
   if (!isInitialized || !isAuthenticated || !user) {
     return (
       <SidebarMenu>
         <SidebarMenuItem>
           <SidebarMenuButton
-            onClick={handleLoginRedirect}
+            onClick={() => {
+              void login();
+            }}
             className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground h-12 justify-center px-4 py-3 font-medium group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2!"
           >
             <LogIn />
@@ -71,9 +65,13 @@ export function NavUserLogin() {
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuItem onClick={handleLogoutRedirect}>
+            <DropdownMenuItem
+              onClick={() => {
+                void logout();
+              }}
+            >
               <LogOut />
-              Log out
+              Ausloggen
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -1,4 +1,4 @@
-import Keycloak, { type KeycloakTokenParsed } from 'keycloak-js';
+import type { KeycloakTokenParsed } from 'keycloak-js';
 import {
   useCallback,
   useEffect,
@@ -6,26 +6,16 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { keycloakConfig, keycloakInitOptions } from '../auth-config';
 import { AuthContext, type AuthContextValue } from './auth-context';
+import {
+  initializeKeycloak,
+  keycloak,
+  login as loginWithKeycloak,
+  logout as logoutFromKeycloak,
+} from '../keycloak-client';
 
 interface AuthProviderProps {
   children: ReactNode;
-}
-
-const keycloak = new Keycloak(keycloakConfig);
-let keycloakInitPromise: Promise<boolean> | null = null;
-const appRedirectUri = window.location.origin;
-
-function initializeKeycloak(): Promise<boolean> {
-  if (!keycloakInitPromise) {
-    keycloakInitPromise = keycloak.init({
-      ...keycloakInitOptions,
-      redirectUri: appRedirectUri,
-    });
-  }
-
-  return keycloakInitPromise;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -39,47 +29,39 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, []);
 
   useEffect(() => {
-    let isMounted = true;
+    let isActive = true;
+
+    const handleAuthChange = () => {
+      if (!isActive) {
+        return;
+      }
+
+      syncAuthState();
+    };
 
     void initializeKeycloak()
-      .then(() => {
-        if (!isMounted) {
-          return;
-        }
-
-        syncAuthState();
-      })
       .catch((error: unknown) => {
         console.error('Keycloak initialization failed', error);
       })
       .finally(() => {
-        if (isMounted) {
+        handleAuthChange();
+        if (isActive) {
           setIsInitialized(true);
         }
       });
 
-    keycloak.onAuthSuccess = () => {
-      syncAuthState();
-    };
-
-    keycloak.onAuthRefreshSuccess = () => {
-      syncAuthState();
-    };
-
-    keycloak.onAuthLogout = () => {
-      setIsAuthenticated(false);
-      setTokenParsed(undefined);
-    };
-
+    keycloak.onAuthSuccess = handleAuthChange;
+    keycloak.onAuthRefreshSuccess = handleAuthChange;
+    keycloak.onAuthLogout = handleAuthChange;
     keycloak.onTokenExpired = () => {
-      void keycloak.updateToken(30).catch(() => {
-        setIsAuthenticated(false);
-        setTokenParsed(undefined);
-      });
+      void keycloak
+        .updateToken(30)
+        .then(handleAuthChange)
+        .catch(handleAuthChange);
     };
 
     return () => {
-      isMounted = false;
+      isActive = false;
 
       keycloak.onAuthSuccess = undefined;
       keycloak.onAuthRefreshSuccess = undefined;
@@ -89,11 +71,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }, [syncAuthState]);
 
   const login = useCallback(async () => {
-    await keycloak.login({ redirectUri: appRedirectUri });
+    await loginWithKeycloak();
   }, []);
 
   const logout = useCallback(async () => {
-    await keycloak.logout({ redirectUri: appRedirectUri });
+    await logoutFromKeycloak();
   }, []);
 
   const value = useMemo<AuthContextValue>(
