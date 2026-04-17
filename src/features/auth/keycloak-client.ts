@@ -7,10 +7,18 @@ let initPromise: Promise<boolean> | null = null;
 
 export function initializeKeycloak(): Promise<boolean> {
   if (!initPromise) {
-    initPromise = keycloak.init({
-      ...keycloakInitOptions,
-      redirectUri: window.location.origin,
-    });
+    initPromise = keycloak
+      .init({
+        ...keycloakInitOptions,
+        redirectUri: window.location.origin,
+      })
+      .then((authenticated) => {
+        if (authenticated && keycloak.token) {
+          // console.log(keycloak.token);
+        }
+
+        return authenticated;
+      });
   }
 
   return initPromise;
