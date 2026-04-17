@@ -10,6 +10,7 @@ import { IconPlus } from '@tabler/icons-react';
 import type { GetRankDto } from '@/shared/api/model';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
+import { getApiErrorMessage } from '@shared/api/api-error';
 import {
   useRankControllerGetAllRanks,
   useRankControllerDeleteRankById,
@@ -43,7 +44,7 @@ export default function RanksPage() {
         },
         onError: (error) => {
           toast.error(
-            `Fehler beim Löschen: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`
+            getApiErrorMessage(error, 'Fehler beim Loeschen des Dienstgrades')
           );
         },
       }

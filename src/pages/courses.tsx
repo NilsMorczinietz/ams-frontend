@@ -15,6 +15,7 @@ import { IconPlus } from '@tabler/icons-react';
 import type { GetCourseDto } from '@/shared/api/model';
 import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
+import { getApiErrorMessage } from '@shared/api/api-error';
 
 export default function CoursesPage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -46,7 +47,7 @@ export default function CoursesPage() {
         },
         onError: (error) => {
           toast.error(
-            `Fehler beim Löschen: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`
+            getApiErrorMessage(error, 'Fehler beim Loeschen des Kurses')
           );
         },
       }

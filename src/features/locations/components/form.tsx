@@ -26,6 +26,7 @@ import {
   useLocationControllerUpdateLocation,
   getLocationControllerGetAllLocationsQueryKey,
 } from '@api/locations/locations';
+import { getApiErrorMessage } from '@shared/api/api-error';
 import type {
   CreateLocationDto,
   GetLocationDto,
@@ -145,8 +146,13 @@ export function LocationForm({
             onOpenChange(false);
             form.reset();
           },
-          onError: () => {
-            toast.error('Fehler beim Aktualisieren des Standorts');
+          onError: (error) => {
+            toast.error(
+              getApiErrorMessage(
+                error,
+                'Fehler beim Aktualisieren des Standorts'
+              )
+            );
           },
         }
       );
@@ -162,8 +168,10 @@ export function LocationForm({
             onOpenChange(false);
             form.reset();
           },
-          onError: () => {
-            toast.error('Fehler beim Erstellen des Standorts');
+          onError: (error) => {
+            toast.error(
+              getApiErrorMessage(error, 'Fehler beim Erstellen des Standorts')
+            );
           },
         }
       );

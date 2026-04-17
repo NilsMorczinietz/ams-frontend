@@ -28,6 +28,7 @@ import {
   useRankControllerCreateRank,
   useRankControllerUpdateRank,
 } from '@/shared/api/ranks/ranks';
+import { getApiErrorMessage } from '@shared/api/api-error';
 import { Checkbox } from '@shared/components/ui/checkbox';
 import {
   Field,
@@ -112,8 +113,13 @@ export function RankForm({ open, onOpenChange, rank }: RankFormProps) {
             onOpenChange(false);
             form.reset();
           },
-          onError: () => {
-            toast.error('Fehler beim Aktualisieren des Dienstgrades');
+          onError: (error) => {
+            toast.error(
+              getApiErrorMessage(
+                error,
+                'Fehler beim Aktualisieren des Dienstgrades'
+              )
+            );
           },
         }
       );
@@ -129,8 +135,13 @@ export function RankForm({ open, onOpenChange, rank }: RankFormProps) {
             onOpenChange(false);
             form.reset();
           },
-          onError: () => {
-            toast.error('Fehler beim Erstellen des Dienstgrades');
+          onError: (error) => {
+            toast.error(
+              getApiErrorMessage(
+                error,
+                'Fehler beim Erstellen des Dienstgrades'
+              )
+            );
           },
         }
       );

@@ -26,6 +26,7 @@ import {
   useCourseControllerUpdateCourse,
   getCourseControllerGetAllCoursesQueryKey,
 } from '@api/courses/courses';
+import { getApiErrorMessage } from '@shared/api/api-error';
 import type {
   CreateCourseDto,
   GetCourseDto,
@@ -104,8 +105,13 @@ export function CourseForm({ open, onOpenChange, course }: CourseFormProps) {
             onOpenChange(false);
             form.reset();
           },
-          onError: () => {
-            toast.error('Fehler beim Aktualisieren des Lehrgangs');
+          onError: (error) => {
+            toast.error(
+              getApiErrorMessage(
+                error,
+                'Fehler beim Aktualisieren des Lehrgangs'
+              )
+            );
           },
         }
       );
@@ -121,8 +127,10 @@ export function CourseForm({ open, onOpenChange, course }: CourseFormProps) {
             onOpenChange(false);
             form.reset();
           },
-          onError: () => {
-            toast.error('Fehler beim Erstellen des Lehrgangs');
+          onError: (error) => {
+            toast.error(
+              getApiErrorMessage(error, 'Fehler beim Erstellen des Lehrgangs')
+            );
           },
         }
       );

@@ -1,4 +1,5 @@
 import { getAccessToken } from '@features/auth/keycloak-client';
+import { ApiHttpError } from './api-error';
 
 const API_PREFIX = '/api/';
 const originalFetch = window.fetch.bind(window);
@@ -37,10 +38,16 @@ export function installAuthenticatedApiFetch(): void {
       }
     }
 
-    return originalFetch(input, {
+    const response = await originalFetch(input, {
       ...init,
       headers,
     });
+
+    if (!response.ok) {
+      throw await ApiHttpError.fromResponse(response);
+    }
+
+    return response;
   };
 
   isInstalled = true;
