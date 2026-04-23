@@ -27,11 +27,7 @@ import {
   getCourseControllerGetAllCoursesQueryKey,
 } from '@api/courses/courses';
 import { getApiErrorMessage } from '@shared/api/api-error';
-import type {
-  CreateCourseDto,
-  GetCourseDto,
-  UpdateCourseDto,
-} from '@api/model';
+import type { GetCourseDto } from '@api/model';
 import { useQueryClient } from '@tanstack/react-query';
 
 const courseFormSchema = z.object({
@@ -95,7 +91,7 @@ export function CourseForm({ open, onOpenChange, course }: CourseFormProps) {
   const onSubmit = (data: CourseFormValues) => {
     if (isEditMode && course) {
       updateCourse(
-        { id: course.id, data: data as UpdateCourseDto },
+        { id: course.id, data },
         {
           onSuccess: () => {
             void queryClient.refetchQueries({
@@ -117,7 +113,7 @@ export function CourseForm({ open, onOpenChange, course }: CourseFormProps) {
       );
     } else {
       createCourse(
-        { data: data as CreateCourseDto },
+        { data },
         {
           onSuccess: () => {
             void queryClient.refetchQueries({

@@ -27,11 +27,7 @@ import {
   getLocationControllerGetAllLocationsQueryKey,
 } from '@api/locations/locations';
 import { getApiErrorMessage } from '@shared/api/api-error';
-import type {
-  CreateLocationDto,
-  GetLocationDto,
-  UpdateLocationDto,
-} from '@api/model';
+import type { GetLocationDto } from '@api/model';
 import { useQueryClient } from '@tanstack/react-query';
 
 const locationFormSchema = z.object({
@@ -136,7 +132,7 @@ export function LocationForm({
   const onSubmit = (data: LocationFormValues) => {
     if (isEditMode && location) {
       updateLocation(
-        { id: location.id, data: data as UpdateLocationDto },
+        { id: location.id, data },
         {
           onSuccess: () => {
             void queryClient.refetchQueries({
@@ -158,7 +154,7 @@ export function LocationForm({
       );
     } else {
       createLocation(
-        { data: data as CreateLocationDto },
+        { data },
         {
           onSuccess: () => {
             void queryClient.refetchQueries({

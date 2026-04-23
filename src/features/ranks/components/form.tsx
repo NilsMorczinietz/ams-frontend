@@ -21,7 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@shared/components/ui/form';
-import type { CreateRankDto, GetRankDto, UpdateRankDto } from '@api/model';
+import type { GetRankDto } from '@api/model';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   getRankControllerGetAllRanksQueryKey,
@@ -103,7 +103,7 @@ export function RankForm({ open, onOpenChange, rank }: RankFormProps) {
   const onSubmit = (data: RankFormValues) => {
     if (isEditMode && rank) {
       updateRank(
-        { id: rank.id, data: data as UpdateRankDto },
+        { id: rank.id, data },
         {
           onSuccess: () => {
             void queryClient.refetchQueries({
@@ -125,7 +125,7 @@ export function RankForm({ open, onOpenChange, rank }: RankFormProps) {
       );
     } else {
       createRank(
-        { data: data as CreateRankDto },
+        { data },
         {
           onSuccess: () => {
             void queryClient.refetchQueries({
