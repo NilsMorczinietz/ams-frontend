@@ -7,7 +7,7 @@
  */
 
 export interface CreateUserDto {
-  oid: string;
+  keycloakId: string;
   mpid: string;
   name: string;
   email: string;

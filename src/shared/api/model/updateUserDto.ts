@@ -7,7 +7,7 @@
  */
 
 export interface UpdateUserDto {
-  oid?: string;
+  keycloakId?: string;
   mpid?: string;
   name?: string;
   email?: string;

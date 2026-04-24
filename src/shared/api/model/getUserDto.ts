@@ -9,7 +9,7 @@
 export interface GetUserDto {
   id: string;
   mpid: string;
-  oid: string;
+  keycloakId: string;
   name: string;
   email: string;
   joinedAt: string;
