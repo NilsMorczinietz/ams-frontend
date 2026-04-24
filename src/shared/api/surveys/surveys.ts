@@ -21,7 +21,7 @@ import type {
   UseQueryResult,
 } from '@tanstack/react-query';
 
-import type { CreateSurveyDto, GetSurveyDto } from '../model';
+import type { CreateSurveyDto, GetSurveyDto, UpdateSurveyDto } from '../model';
 
 export type surveyControllerCreateSurveyResponse201 = {
   data: GetSurveyDto;
@@ -494,3 +494,219 @@ export function useSurveyControllerGetSurveyById<
 
   return { ...query, queryKey: queryOptions.queryKey };
 }
+
+export type surveyControllerUpdateSurveyResponse200 = {
+  data: GetSurveyDto;
+  status: 200;
+};
+
+export type surveyControllerUpdateSurveyResponseSuccess =
+  surveyControllerUpdateSurveyResponse200 & {
+    headers: Headers;
+  };
+export type surveyControllerUpdateSurveyResponse =
+  surveyControllerUpdateSurveyResponseSuccess;
+
+export const getSurveyControllerUpdateSurveyUrl = (id: string) => {
+  return `/api/v1/surveys/${id}`;
+};
+
+export const surveyControllerUpdateSurvey = async (
+  id: string,
+  updateSurveyDto: UpdateSurveyDto,
+  options?: RequestInit
+): Promise<surveyControllerUpdateSurveyResponse> => {
+  const res = await fetch(getSurveyControllerUpdateSurveyUrl(id), {
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(updateSurveyDto),
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: surveyControllerUpdateSurveyResponse['data'] = body
+    ? JSON.parse(body)
+    : {};
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as surveyControllerUpdateSurveyResponse;
+};
+
+export const getSurveyControllerUpdateSurveyMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof surveyControllerUpdateSurvey>>,
+    TError,
+    { id: string; data: UpdateSurveyDto },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof surveyControllerUpdateSurvey>>,
+  TError,
+  { id: string; data: UpdateSurveyDto },
+  TContext
+> => {
+  const mutationKey = ['surveyControllerUpdateSurvey'];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof surveyControllerUpdateSurvey>>,
+    { id: string; data: UpdateSurveyDto }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return surveyControllerUpdateSurvey(id, data, fetchOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SurveyControllerUpdateSurveyMutationResult = NonNullable<
+  Awaited<ReturnType<typeof surveyControllerUpdateSurvey>>
+>;
+export type SurveyControllerUpdateSurveyMutationBody = UpdateSurveyDto;
+export type SurveyControllerUpdateSurveyMutationError = unknown;
+
+export const useSurveyControllerUpdateSurvey = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof surveyControllerUpdateSurvey>>,
+      TError,
+      { id: string; data: UpdateSurveyDto },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof surveyControllerUpdateSurvey>>,
+  TError,
+  { id: string; data: UpdateSurveyDto },
+  TContext
+> => {
+  return useMutation(
+    getSurveyControllerUpdateSurveyMutationOptions(options),
+    queryClient
+  );
+};
+export type surveyControllerDeleteSurveyByIdResponse200 = {
+  data: void;
+  status: 200;
+};
+
+export type surveyControllerDeleteSurveyByIdResponseSuccess =
+  surveyControllerDeleteSurveyByIdResponse200 & {
+    headers: Headers;
+  };
+export type surveyControllerDeleteSurveyByIdResponse =
+  surveyControllerDeleteSurveyByIdResponseSuccess;
+
+export const getSurveyControllerDeleteSurveyByIdUrl = (id: string) => {
+  return `/api/v1/surveys/${id}`;
+};
+
+export const surveyControllerDeleteSurveyById = async (
+  id: string,
+  options?: RequestInit
+): Promise<surveyControllerDeleteSurveyByIdResponse> => {
+  const res = await fetch(getSurveyControllerDeleteSurveyByIdUrl(id), {
+    ...options,
+    method: 'DELETE',
+  });
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+
+  const data: surveyControllerDeleteSurveyByIdResponse['data'] = body
+    ? JSON.parse(body)
+    : undefined;
+  return {
+    data,
+    status: res.status,
+    headers: res.headers,
+  } as surveyControllerDeleteSurveyByIdResponse;
+};
+
+export const getSurveyControllerDeleteSurveyByIdMutationOptions = <
+  TError = unknown,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof surveyControllerDeleteSurveyById>>,
+    TError,
+    { id: string },
+    TContext
+  >;
+  fetch?: RequestInit;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof surveyControllerDeleteSurveyById>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  const mutationKey = ['surveyControllerDeleteSurveyById'];
+  const { mutation: mutationOptions, fetch: fetchOptions } = options
+    ? options.mutation &&
+      'mutationKey' in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, fetch: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof surveyControllerDeleteSurveyById>>,
+    { id: string }
+  > = (props) => {
+    const { id } = props ?? {};
+
+    return surveyControllerDeleteSurveyById(id, fetchOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type SurveyControllerDeleteSurveyByIdMutationResult = NonNullable<
+  Awaited<ReturnType<typeof surveyControllerDeleteSurveyById>>
+>;
+
+export type SurveyControllerDeleteSurveyByIdMutationError = unknown;
+
+export const useSurveyControllerDeleteSurveyById = <
+  TError = unknown,
+  TContext = unknown,
+>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof surveyControllerDeleteSurveyById>>,
+      TError,
+      { id: string },
+      TContext
+    >;
+    fetch?: RequestInit;
+  },
+  queryClient?: QueryClient
+): UseMutationResult<
+  Awaited<ReturnType<typeof surveyControllerDeleteSurveyById>>,
+  TError,
+  { id: string },
+  TContext
+> => {
+  return useMutation(
+    getSurveyControllerDeleteSurveyByIdMutationOptions(options),
+    queryClient
+  );
+};

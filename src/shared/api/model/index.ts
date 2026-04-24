@@ -43,4 +43,6 @@ export * from './healthControllerReady503Info';
 export * from './updateCourseDto';
 export * from './updateLocationDto';
 export * from './updateRankDto';
+export * from './updateSurveyDto';
+export * from './updateSurveyDtoType';
 export * from './updateUserDto';

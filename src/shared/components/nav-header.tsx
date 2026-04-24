@@ -22,9 +22,7 @@ export function NavHeader() {
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">Ausbildung</span>
-              <span className="truncate text-xs">
-                Feuerwehr Monheim am Rhein
-              </span>
+              <span className="truncate text-xs">FF Monheim am Rhein</span>
             </div>
           </SidebarMenuButton>
         </DropdownMenu>

@@ -6,10 +6,11 @@ import {
   MapPin,
   Briefcase,
   Tag,
-  CircleFadingArrowUp,
+  MonitorCog,
   LifeBuoy,
   Megaphone,
   Sun,
+  ClipboardList,
 } from 'lucide-react';
 import { NavCoreData } from '@/shared/components/nav-coreData';
 import { NavUserLogin } from '@shared/components/nav-user-login';
@@ -52,7 +53,12 @@ const data = {
     {
       name: 'Beförderungsregeln',
       url: '/beförderungsregeln',
-      icon: CircleFadingArrowUp,
+      icon: MonitorCog,
+    },
+    {
+      name: 'Umfragen',
+      url: '/umfragen',
+      icon: ClipboardList,
     },
   ],
   information: [

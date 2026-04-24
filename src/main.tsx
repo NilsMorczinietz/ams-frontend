@@ -7,11 +7,13 @@ import { Toaster } from '@shared/components/ui/sonner';
 import { installAuthenticatedApiFetch } from '@shared/api/auth-fetch';
 import './index.css';
 import App from './App.tsx';
+
 import HomePage from './pages/home.tsx';
 import LocationsPage from './pages/locations.tsx';
 import CoursesPage from './pages/courses.tsx';
 import RanksPage from './pages/ranks.tsx';
 import PromotionRequirementPage from './pages/promotion-requirements.tsx';
+import SurveysPage from './pages/surveys.tsx';
 
 installAuthenticatedApiFetch();
 
@@ -31,6 +33,7 @@ createRoot(document.getElementById('root')!).render(
                 path="beförderungsregeln"
                 element={<PromotionRequirementPage />}
               />
+              <Route path="umfragen" element={<SurveysPage />} />
             </Route>
           </Routes>
         </BrowserRouter>
